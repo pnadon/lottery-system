@@ -3,4 +3,4 @@ project(lotterySystem C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(lotterySystem main.c)
+add_executable(lotterySystem lotteryServer.c lotteryServer.h lotteryClient.c lotteryClient.h)
