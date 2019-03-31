@@ -43,7 +43,7 @@ int main()
                                (struct sockaddr *)&client_address, &client_len);
 
 /*  Fork to create a process for this client and perform a test to see
-    whether we're the parent or the child.  */
+    whether we're the parent or the child. */
 
         if(fork() == 0) {
 
