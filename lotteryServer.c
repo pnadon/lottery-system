@@ -74,16 +74,20 @@ void handleClient( int client_sockfd) {
 }
 
 void generateLotteryNumbers( clientPacket packet, int response[]) {
-    int responseCount = packet.numMax;
+    int responseIndex = 0;
     srand(time(NULL));
-    float randReal;
-    for( int i = 1; i < responseCount; i++) {
+    double randReal;
+
+    double select = (double)packet.numCount;
+    double remaining = (double)packet.numMax;
+    for( int i = 1; i < (packet.numMax + 1); i++) {
         randReal = rand() / ((double) RAND_MAX + 1);
-        if( randReal < ( packet.numCount / packet.numMax)) {
-            response[i] = i;
-            packet.numCount--;
+        if( randReal < ( (double)select / (double)remaining)) {
+            response[ responseIndex] = i;
+            responseIndex++;
+            select = select - 1;
         }
-        packet.numMax--;
+        remaining = remaining - 1;
     }
 }
 
