@@ -8,12 +8,14 @@
 #include <signal.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <time.h>
 #include "lotteryServer.h"
 
 int main()
 {
     int server_sockfd, client_sockfd;
-    int server_len, client_len;
+    int server_len;
+    unsigned int client_len;
     struct sockaddr_in server_address;
     struct sockaddr_in client_address;
 
@@ -31,9 +33,7 @@ int main()
 
     signal(SIGCHLD, SIG_IGN);
 
-    while(1) {
-        char ch;
-
+    while( TRUE) {
         printf("server waiting\n");
 
 /*  Accept connection.  */
@@ -50,12 +50,8 @@ int main()
 /*  If we're the child, we can now read/write to the client on client_sockfd.
     The five second delay is just for this demonstration.  */
 
-            read(client_sockfd, &ch, 1);
-            sleep(5);
-            ch++;
-            write(client_sockfd, &ch, 1);
-            close(client_sockfd);
-            exit(0);
+            handleClient( client_sockfd);
+            exit( EXIT_SUCCESS);
         }
 
 /*  Otherwise, we must be the parent and our work for this client is finished.  */
@@ -64,4 +60,43 @@ int main()
             close(client_sockfd);
         }
     }
+}
+
+void handleClient( int client_sockfd) {
+    clientPacket packet;
+    read(client_sockfd, &packet, sizeof( packet));
+    printf("Received packet {%d, %d} from client\n", packet.numCount, packet.numMax);
+    int response[ packet.numCount];
+    generateLotteryNumbers( packet, response);
+    printSendResponse( packet.numCount, response);
+    sendResponse( client_sockfd, packet.numCount, response);
+    close(client_sockfd);
+}
+
+void generateLotteryNumbers( clientPacket packet, int response[]) {
+    int responseCount = packet.numMax;
+    srand(time(NULL));
+    float randReal;
+    for( int i = 1; i < responseCount; i++) {
+        randReal = rand() / ((double) RAND_MAX + 1);
+        if( randReal < ( packet.numCount / packet.numMax)) {
+            response[i] = i;
+            packet.numCount--;
+        }
+        packet.numMax--;
+    }
+}
+
+void sendResponse( int sockfd, int numCount, int response[]) {
+    for( int i = 0; i < numCount; i++) {
+        write(sockfd, &response[i], sizeof( int));
+    }
+}
+
+void printSendResponse( int numCount, int response[]) {
+    printf("Sending:\n|");
+    for( int i = 0; i < numCount; i++) {
+        printf("%d ", response[i]);
+    }
+    printf("|\n");
 }
