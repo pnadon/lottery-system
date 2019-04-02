@@ -86,8 +86,8 @@ int promptUser( char* msg) {
 
 void sendToServer( int sockfd, int numCount, int numMax) {
     clientPacket packet = {
-            numCount,
-            numMax
+            htons( numCount),
+            htons( numMax)
     };
     write(sockfd, &packet, sizeof( packet));
 }
@@ -97,6 +97,7 @@ void printServerResponse( int sockfd, int numCount) {
     int response;
     while ( numCount > 0) {
         read(sockfd, &response, sizeof(response));
+        response = ntohs( response);
         printf("%d\n", response);
         numCount--;
     }

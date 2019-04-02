@@ -56,6 +56,8 @@ int main( int argc, char* argv[]) {
 int handleClient( int client_sockfd) {
     clientPacket packet;
     read( client_sockfd, &packet, sizeof( packet));
+    packet.numCount = ntohs( packet.numCount);
+    packet.numMax = ntohs( packet.numMax);
     printf( "Received packet {%d, %d} from client\n", packet.numCount, packet.numMax);
 
     if( packet.numCount == CLOSE_SIGNAL) {
@@ -89,6 +91,7 @@ void generateLotteryNumbers( clientPacket packet, int response[]) {
 
 void sendResponse( int sockfd, int numCount, int response[]) {
     for( int i = 0; i < numCount; i++) {
+        response[i] = htons( response[i]);
         write(sockfd, &response[i], sizeof( int));
     }
 }
