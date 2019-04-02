@@ -48,14 +48,8 @@ void client( int sockfd) {
     int numMax;
 
     while(1) {
-        numCount = promptUser( NUMCOUNT_PROMPT);
-        numMax = promptUser( NUMMAX_PROMPT);
-        if( numCount == EOF || numMax == EOF) {
-            printf("Recieved EOF, bye!\n");
-            sendToServer( sockfd, CLOSE_SIGNAL, CLOSE_SIGNAL);
-            close(sockfd);
-            exit(EXIT_SUCCESS);
-        }
+        numCount = promptUser( NUMCOUNT_PROMPT, sockfd);
+        numMax = promptUser( NUMMAX_PROMPT, sockfd);
         if( numMax > numCount) {
             sendToServer( sockfd, numCount, numMax);
             printServerResponse( sockfd, numCount);
@@ -65,21 +59,22 @@ void client( int sockfd) {
     }
 }
 
-int promptUser( char* msg) {
+int promptUser( char* msg, int sockfd) {
     int scanfRetVal = 0;
     int res = 0;
-    int correctInput = FALSE;
 
-    while( !correctInput) {
-        printf("%s\n", msg);
-        scanfRetVal = scanf("%d", &res);
-        if( scanfRetVal == EOF) {
-            return EOF;
-        } else if( (scanfRetVal == 0) || (res < 1)) {
-            printf("incorrect input. Please enter a positive integer\n");
-        } else {
-            correctInput = TRUE;
-        }
+    printf("%s\n", msg);
+    scanfRetVal = scanf("%d", &res);
+    if( scanfRetVal == EOF) {
+        printf("Recieved EOF, bye!\n");
+        sendToServer( sockfd, CLOSE_SIGNAL, CLOSE_SIGNAL);
+        close(sockfd);
+        exit(EXIT_SUCCESS);
+    } else if( (res < 1) || (scanfRetVal < 1)) {
+        perror("incorrect input. Please enter a positive integer");
+        sendToServer( sockfd, CLOSE_SIGNAL, CLOSE_SIGNAL);
+        close( sockfd);
+        exit( EXIT_FAILURE);
     }
     return res;
 }

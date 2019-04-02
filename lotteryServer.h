@@ -17,7 +17,7 @@
 #define FALSE 0
 #define CLOSE_SOCKET 0
 #define CONTINUE 1
-#define CLOSE_SIGNAL -1
+#define CLOSE_SIGNAL 0
 
 /*
  * The clientPacket contains the two numbers received from the client.

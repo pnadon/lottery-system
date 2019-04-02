@@ -22,7 +22,7 @@
 #define NUMMAX_PROMPT "Please enter the maximum value of the lottery numbers:"
 #define CLOSE_SOCKET 0
 #define CONTINUE 1
-#define CLOSE_SIGNAL -1
+#define CLOSE_SIGNAL 0
 
 /*
  * The clientPacket contains the two numbers sent to the server.
@@ -45,7 +45,7 @@ void client( int sockfd);
  * Prints the message specified in msg, and returns a correctly inputted number.
  * Loops if the number is invalid, or returns EOF if the user sends the EOF signal.
  */
-int promptUser( char* msg);
+int promptUser( char* msg, int sockfd);
 
 /*
  * Sends a clientPacket packet to the server specified by sockfd.
