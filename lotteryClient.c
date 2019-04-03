@@ -43,6 +43,11 @@ int main( int argc, char* argv[]) {
     exit( EXIT_SUCCESS);
 }
 
+/*
+ * Prompts the user the number of lottery numbers, and the max value the lottery numbers can have.
+ * Afterwards, it sends them to the server specified by sockfd to be processed.
+ * Finally, it takes the lottery numbers received from the server and prints them.
+ */
 void client( int sockfd) {
     int numCount;
     int numMax;
@@ -59,6 +64,10 @@ void client( int sockfd) {
     }
 }
 
+/*
+ * Prints the message specified in msg, and returns a correctly inputted number.
+ * Loops if the number is invalid, or returns EOF if the user sends the EOF signal.
+ */
 int promptUser( char* msg, int sockfd) {
     int scanfRetVal = 0;
     int res = 0;
@@ -79,6 +88,10 @@ int promptUser( char* msg, int sockfd) {
     return res;
 }
 
+/*
+ * Sends a clientPacket packet to the server specified by sockfd.
+ * The packet contains numCount, and numMax
+ */
 void sendToServer( int sockfd, int numCount, int numMax) {
     clientPacket packet = {
             htons( numCount),
@@ -87,6 +100,11 @@ void sendToServer( int sockfd, int numCount, int numMax) {
     write(sockfd, &packet, sizeof( packet));
 }
 
+/*
+ * Prints the numbers received from the server specified by sockfd.
+ * The numbers represent randomly generated lottery numbers.
+ * numCount represents how many numbers to print.
+ */
 void printServerResponse( int sockfd, int numCount) {
     printf("Your lottery numbers:\n");
     int response;

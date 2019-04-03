@@ -34,29 +34,11 @@ typedef struct clientPacket {
     int numMax;
 } clientPacket;
 
-/*
- * Prompts the user the number of lottery numbers, and the max value the lottery numbers can have.
- * Afterwards, it sends them to the server specified by sockfd to be processed.
- * Finally, it takes the lottery numbers received from the server and prints them.
- */
 void client( int sockfd);
 
-/*
- * Prints the message specified in msg, and returns a correctly inputted number.
- * Loops if the number is invalid, or returns EOF if the user sends the EOF signal.
- */
 int promptUser( char* msg, int sockfd);
 
-/*
- * Sends a clientPacket packet to the server specified by sockfd.
- * The packet contains numCount, and numMax
- */
 void sendToServer( int sockfd, int numCount, int numMax);
 
-/*
- * Prints the numbers received from the server specified by sockfd.
- * The numbers represent randomly generated lottery numbers.
- * numCount represents how many numbers to print.
- */
 void printServerResponse( int sockfd, int numCount);
 #endif //LOTTERYSYSTEM_LOTTERYCLIENT_H
